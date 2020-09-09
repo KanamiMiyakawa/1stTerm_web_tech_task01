@@ -19,7 +19,7 @@
       <input type="submit" name="送信" >
     </form>
     <br>
-    <% bad_guys = connection.exec("select give_for, length, weight from crops where qualitu = false;") %>
+    <% bad_guys = connection.exec("select give_for, length, weight from crops where quality = false;") %>
     <% data_bad_guys = [] %>
     <% bad_guys.each do |record| %>
       <%  data_bad_guys << "売った相手：#{record["give_for"]}　ゴーヤの長さ：#{record["length"]}　ゴーヤの大きさ：#{record["weight"]}" %>
