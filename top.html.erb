@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+    <p>ちゃんぷるー</p>
+    <% require 'pg' %>
+    <% connection = PG::connect(dbname: "goya") %>
+    <% connection.internal_encoding = "UTF-8" %>
+
+    <% not_myself = connection.exec("select give_for, length, weight from crops where not (give_for = '自家消費');") %>
+    <% data_not_myself = [] %>
+    <% not_myself.each do |record| %>
+      <%  data_not_myself << "売った相手：#{record["give_for"]}　ゴーヤの長さ：#{record["length"]}　ゴーヤの大きさ：#{record["weight"]}" %>
+    <% end %>
+    <form action="goya.cgi" method="POST">
+       自家消費じゃないやつ<br><br>
+      <input type="text"  name="goya" value="<%= data_not_myself.join(",") %>">
+      <input type="submit" name="送信" >
+    </form>
+    <br>
+    <% bad_guys = connection.exec("select give_for, length, weight from crops where qualitu = false;") %>
+    <% data_bad_guys = [] %>
+    <% bad_guys.each do |record| %>
+      <%  data_bad_guys << "売った相手：#{record["give_for"]}　ゴーヤの長さ：#{record["length"]}　ゴーヤの大きさ：#{record["weight"]}" %>
+    <% end %>
+    <form action="goya.cgi" method="POST">
+       質が悪いやつ<br><br>
+       <!-- valueには、送りたいデータを代入する -->
+       <!-- name="goya"を、情報の目印とする -->
+      <input type="text" name="goya" value="<%= data_bad_guys.join(",") %>">
+      <input type="submit" name="送信" >
+    </form>
+  </body>
+</html>
